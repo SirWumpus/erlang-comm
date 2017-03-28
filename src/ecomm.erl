@@ -47,24 +47,27 @@ process(Opts, [File1, File2]) ->
 	end.
 
 process(Opts, File1, File2) ->
-	Fp1 = case file:open(File1, [read, binary, {read_ahead, ?BUFSIZ}]) of
-	{error, Reason1} ->
-		throw({error, File1, Reason1});
-	{ok, Fp_1} ->
-		Fp_1
+	Fp1 = open_file(File1),
+	Fp2 = open_file(File2),
+	case {Fp1, Fp2} of
+	{standard_io, standard_io} ->
+		throw({error, "-", 'only one file can refer to standard input'});
+	_ ->
+		comm(Fp1, Fp2, Opts)
 	end,
-
-	Fp2 = case file:open(File2, [read, binary, {read_ahead, ?BUFSIZ}]) of
-	{error, Reason2} ->
-		throw({error, File2, Reason2});
-	{ok, Fp_2} ->
-		Fp_2
-	end,
-
-	comm(Fp1, Fp2, Opts),
-
 	file:close(Fp1),
 	file:close(Fp2).
+
+open_file("-") ->
+        io:setopts(standard_io, [binary]),
+	standard_io;
+open_file(File) ->
+	case file:open(File, [read, binary, {read_ahead, ?BUFSIZ}]) of
+	{error, Reason} ->
+		throw({error, File, Reason});
+	{ok, Fp} ->
+		Fp
+	end.
 
 comm(Fp1, Fp2, Opts) ->
 	Col1 = ?FLAG_COLUMN_MASK band case proplists:get_value(no_col_1, Opts, false) of

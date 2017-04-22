@@ -1,6 +1,6 @@
 {application,ecomm,
              [{pkg_name,"ecomm"},
-              {vsn,"1.0.1"},
+              {vsn,"1.0.2"},
               {description,"Erlang version of comm(1)"},
               {links,[{"Github","https://github.com/SirWumpus/erlang-comm"}]},
               {applications,[kernel,stdlib,ebs,egetopt]},

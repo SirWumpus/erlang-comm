@@ -1,5 +1,5 @@
-Erlang uniq(1)
-=============
+Erlang comm(1)
+==============
 
 ```
 usage: ecomm [-123f] file1 file2
